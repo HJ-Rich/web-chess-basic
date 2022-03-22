@@ -12,23 +12,23 @@
     <h1>♟️ 초간단 체스</h1>
     <section class="chess-ui">
         {{#this}}
-        <div class="black-square pawn">
+        <div class="black-square pawn" data-position="a1">
             {{#a2}}
             <span>{{COLOR}}</span>
             <img src="images/PAWN_{{color}}.png" class="pawn-img"/>
             {{/a2}}
         </div>
-        <div class="white-square pawn">
+        <div class="white-square pawn" data-position="b1">
             {{#b2}}
             <img src="images/PAWN_{{color}}.png" class="pawn-img"/>
             {{/b2}}
         </div>
-        <div class="white-square pawn">
+        <div class="white-square pawn" data-position="a2">
             {{#a1}}
             <img src="images/PAWN_{{color}}.png" class="pawn-img"/>
             {{/a1}}
         </div>
-        <div class="black-square pawn">
+        <div class="black-square pawn" data-position="b2">
             {{#b1}}
             <img src="images/PAWN_{{color}}.png" class="pawn-img"/>
             {{/b1}}
@@ -45,5 +45,35 @@
     </section>
 </div>
 </body>
+
+
+<script>
+    let selected = false;
+    let from;
+    let to;
+    const url = '/move';
+
+    const chesses = document.querySelectorAll('.chess-ui > div')
+
+    const move = (e) => {
+        if (selected === false) {
+            from = e.target.parentElement.dataset.position;
+            selected = true;
+            return;
+        }
+
+        to = e.target.parentElement.dataset.position;
+
+        fetch(url, {
+            method: 'POST',
+            body: `command=${to},${from}`,
+        })
+            .then(e => location.reload(true));
+
+        selected = false;
+    }
+
+    chesses.forEach(chess => chess.addEventListener('click', move));
+</script>
 
 </html>
